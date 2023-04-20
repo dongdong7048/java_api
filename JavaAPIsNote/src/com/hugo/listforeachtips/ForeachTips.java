@@ -2,10 +2,7 @@ package com.hugo.listforeachtips;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ForeachTips {
 
@@ -22,13 +19,11 @@ public class ForeachTips {
      * */
 
     @Test
-    public void testForeach() {
+    public void testForeachRemove() {
         List<Integer> list = new ArrayList<>();
-        list.add(1);
-        list.add(2);
-        list.add(3);
-        list.add(4);
-        list.add(5);
+        for(int i = 0;i<=50;i++){
+            list.add(i);
+        }
 
         // 情境1： 刪除列表中所有的奇數
         // 以下會產生java.util.ConcurrentModificationException的異常
@@ -47,6 +42,47 @@ public class ForeachTips {
             }
 
         }
+
+        System.out.println(list);
+    }
+
+
+    @Test
+    public void testForeachAdd() {
+        List<Integer> list = new ArrayList<>();
+        for(int i = 1;i<=10;i++){
+            list.add(i);
+        }
+
+        // 情境2： 遍歷時每遇到一個偶數，就增加一個2倍的偶數進去
+//         以下會產生java.util.ConcurrentModificationException的異常
+//        list.forEach(i->{
+//            if(i/2 != 0){
+//                list.add(i*2);
+//            }
+//        });
+
+        // 解法2：使用listIterator迭代器的add操作
+        // 這樣做可以順利的增加在list中，不過資料會加在目標值的下一個位置，而不是list的最後
+//        ListIterator<Integer> li = list.listIterator();
+//        while (li.hasNext()) {
+//            Integer num = li.next();
+//            if (num % 2 == 0 && num > 0) {
+//                li.add(num*2);
+//            }
+//        }
+
+        // 如果需要加在list的最後，建議使用一個臨時list來接收要增加的資料，最後再將臨時list合併至原list
+        ListIterator<Integer> li = list.listIterator();
+        List<Integer> tempList = new ArrayList<>();
+        while (li.hasNext()) {
+            Integer num = li.next();
+            if (num % 2 == 0 && num > 0) {
+                tempList.add(num*2);
+            }
+        }
+
+        list.addAll(tempList);
 
         System.out.println(list);
     }
